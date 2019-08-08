@@ -48,7 +48,7 @@ class IO_FLV {
         $this->TagList =  $tagList;
     }
     function parseTag($bitin) {
-        $PreviousTasSize = $bitin->getUI32BE();
+        $PreviousTagSize = $bitin->getUI32BE();
         $Reserved = $bitin->getUIBits(2);
         $Filter = $bitin->getUIBit();
         $TagType = $bitin->getUIBits(5);
@@ -58,7 +58,7 @@ class IO_FLV {
         // $bitin->hexdump($bitin->getOffset()[0], 10);
         $StreamID = $bitin->getUIBits(24);
         $bitin->getData($DataSize);
-        return ['PreviousTasSize' => $PreviousTasSize,
+        return ['PreviousTagSize' => $PreviousTagSize,
                 'Filter' => $Filter, 'TagType' => $TagType,
                 'DataSize' => $DataSize,
                 'Timestamp' => $Timestamp,
@@ -73,7 +73,7 @@ class IO_FLV {
         echo "DataOffset:".$this->DataOffset.PHP_EOL;
         foreach ($this->TagList as $idx => $tag) {
             echo "[$idx] ";
-            echo "PreviousTasSize:".$tag["PreviousTasSize"]." ";
+            echo "PreviousTagSize:".$tag["PreviousTagSize"]." ";
             echo "Filter:".$tag["Filter"].PHP_EOL;
             echo "    TagType:".$tag["TagType"];
             echo "(".self::getTagName($tag["TagType"]).") ";
