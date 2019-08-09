@@ -30,6 +30,9 @@ class IO_FLV {
         $bitin = new IO_Bit();
         $bitin->input($flvdata);
         $this->Signature = $bitin->getData(3);
+        if ($this->Signature !== "FLV") {
+            throw new Exception ("Not FLV FILE (bad signature)");
+        }
         $this->Version = $bitin->getUI8();
         $this->TypeFlags = $bitin->getUI8();
         $this->TypeFlagsAudio = ($this->TypeFlags & 4)?true:false;
