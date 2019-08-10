@@ -3,7 +3,7 @@
 /*
   IO_FLV class
   (c) 2019/08/08 yoya@awm.jp
-  ref) http://pwiki.awm.jp/~yoya/?FLV
+  ref) https://www.adobe.com/devnet/f4v.html
  */
 
 if (is_readable('vendor/autoload.php')) {
@@ -52,13 +52,12 @@ class IO_FLV {
     }
     function parseTag($bitin) {
         $PreviousTagSize = $bitin->getUI32BE();
-        $Reserved = $bitin->getUIBits(2);
-        $Filter = $bitin->getUIBit();
-        $TagType = $bitin->getUIBits(5);
+        $Reserved = $bitin->getUIBits(2);  // xx......
+        $Filter = $bitin->getUIBit();      // ..x.....
+        $TagType = $bitin->getUIBits(5);   // ...xxxxx
         $DataSize = $bitin->getUIBits(24);
         $Timestamp = $bitin->getUIBits(24);
         $TimestampExtended = $bitin->getUI8();
-        // $bitin->hexdump($bitin->getOffset()[0], 10);
         $StreamID = $bitin->getUIBits(24);
         $bitin->getData($DataSize);
         return ['PreviousTagSize' => $PreviousTagSize,
@@ -77,10 +76,10 @@ class IO_FLV {
         foreach ($this->TagList as $idx => $tag) {
             echo "[$idx] ";
             echo "PreviousTagSize:".$tag["PreviousTagSize"]." ";
-            echo "Filter:".$tag["Filter"].PHP_EOL;
-            echo "    TagType:".$tag["TagType"];
-            echo "(".self::getTagName($tag["TagType"]).") ";
-            echo "DataSize:".$tag["DataSize"]." ";
+            echo "Filter:".$tag["Filter"]." ";
+            echo "TagType:".$tag["TagType"];
+            echo "(".self::getTagName($tag["TagType"]).")".PHP_EOL;
+            echo "  DataSize:".$tag["DataSize"]." ";
             echo "Timestamp:".$tag["Timestamp"]." ";
             if ($tag["TimestampExtended"] > 0) {
                 echo "TimestampExtended:".$tag["TimestampExtended"]." ";
