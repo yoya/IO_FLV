@@ -118,7 +118,4 @@ class IO_FLV {
             }
         }
     }
-    function dumpTagAudioHeader($header) {
-        ;
-    }
 }
