@@ -11,6 +11,8 @@ if (is_readable('vendor/autoload.php')) {
 } else {
     require_once 'IO/Bit.php';
     require_once 'IO/FLV/Tag/Audio.php';
+    require_once 'IO/FLV/Tag/Video.php';
+    require_once 'IO/FLV/Tag/Script.php';
 }
 
 class IO_FLV {
@@ -74,8 +76,14 @@ class IO_FLV {
             $tag['AudioTag'] = $audioTag;
             break;
         case 9: // Video Tag
+            $videoTag = new IO_FLV_Tag_Video();
+            $videoTag->parse($bitin, $DataSize);
+            $tag['VideoTag'] = $videoTag;
             break;
         case 18: // Script Tag
+            //$scriptTag = new IO_FLV_Tag_Script();
+            //$scriptTag->parse($bitin, $DataSize);
+            //$tag['ScriptTag'] = $scriptTag;
             break;
         default:
             break;
@@ -110,8 +118,10 @@ class IO_FLV {
                 $tag['AudioTag']->dump();
                 break;
             case 9: // Video Tag
+                $tag['VideoTag']->dump();
                 break;
             case 18: // Script Tag
+                //$tag['ScriptTag']->dump();
                 break;
             default:
                 break;
