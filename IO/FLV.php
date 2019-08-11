@@ -122,7 +122,7 @@ class IO_FLV {
         list($dataStartOffset, $dummy) = $bitin->getOffset();
         switch ($TagType) {
         case 8: // Audio Tag
-            $tag['AudioTagHeader'] = $this->parseTagAudioHeader($bitin, $dataSize);
+            $tag['AudioTagHeader'] = $this->parseTagAudioHeader($bitin, $DataSize);
             list($bodyStartOffset, $dummy) = $bitin->getOffset();
             $tag['AudioTagBody'] = $bitin->getData($DataSize - ($bodyStartOffset - $dataStartOffset));
             break;
