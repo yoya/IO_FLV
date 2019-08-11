@@ -76,7 +76,7 @@ class IO_FLV_Tag_Audio {
             $this->AACPacketType = $bitin->getUI8();
         }
         list($bodyStartOffset, $dummy) = $bitin->getOffset();
-        $this->SoundData = $bitin->getData($DataSize - ($bodyStartOffset - $startOffset));
+        $this->SoundData = $bitin->getData($dataSize - ($bodyStartOffset - $startOffset));
     }
     function dump() {
         echo "SoundFormat:".$this->SoundFormat;

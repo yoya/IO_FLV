@@ -49,7 +49,7 @@ class IO_FLV_Tag_Video {
             $this->CompositionTime = $bitin->getUIBits(24);
         }
         list($bodyStartOffset, $dummy) = $bitin->getOffset();
-        $this->Data = $bitin->getData($DataSize - ($bodyStartOffset - $startOffset));
+        $this->Data = $bitin->getData($dataSize - ($bodyStartOffset - $startOffset));
     }
     function dump() {
         echo "FrameType:".$this->FrameType;
