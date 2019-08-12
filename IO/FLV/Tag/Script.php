@@ -115,6 +115,8 @@ class IO_FLV_Tag_Script {
             break;
         case 5: // Null
         case 6: // Undefined
+            echo PHP_EOL;
+            break;
         case 8: // ECMA array
             $arrayLength = count($Value);
             echo "Length:$arrayLength".PHP_EOL;
