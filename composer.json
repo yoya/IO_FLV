@@ -1,0 +1,21 @@
+{
+    "name": "yoya/io_flv",
+    "type": "library",
+    "description": "FLV library",
+    "keywords": ["flv", "movie", "video"],
+    "homepage": "http://pwiki.awm.jp/~yoya/?IO_FLV",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "yoya",
+            "email": "yoya@awm.jp"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "yoya/io_bit": "~2.4.2"
+    },
+    "autoload": {
+        "psr-0": { "IO_FLV": "." }
+    }
+}
