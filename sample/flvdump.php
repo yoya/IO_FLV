@@ -24,7 +24,11 @@ $flvdata = file_get_contents($flvfile);
 $opts['hexdump'] = isset($options['h']);
 
 $flv = new IO_FLV();
-$flv->parse($flvdata);
+try {
+    $flv->parse($flvdata);
+} catch (Exception $e) {
+    fprintf(STDERR, $e->getMessage());
+}
 
 $flv->dump($opts);
 

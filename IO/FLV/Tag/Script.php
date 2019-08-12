@@ -41,51 +41,94 @@ class IO_FLV_Tag_Script {
         $this->Name = $this->parseScriptDataValue($bitin);
         $this->Value = $this->parseScriptDataValue($bitin);
     }
+
     function parseScriptDataValue($bitin) {
         $Type = $bitin->getUI8();
-        echo "Type:$Type\n";
         switch ($Type) {
         case 0: // Double
-            // $Value = $bitin->getUI32BE();
             $Value = $bitin->getData(8);
+            if (unpack('S',"\x01\x00")[1] === 1) { // little endian
+                $Value = strrev($Value);
+            }
+            $Value = unpack("d", $Value)[1];
+            break;
+        case 1: // Boolean
+            $Value = $bitin->getUI8();
             break;
         case 2: // String
             $length = $bitin->getUI16BE();
-            echo "string length:$length\n";
             $Value = $bitin->getData($length);
+            break;
+        case 5: // Null
+            $Value = null;
+            break;
+        case 6: // Undefined
+            $Value = null;
+            break;
+        case 7: // Boolean
+            $Value = $bitin->getUI16BE();
             break;
         case 8: // ECMA array
             $length = $bitin->getUI32BE();
-            echo "ECMA length:$length\n";
             $Variables = [];
             for ($i = 0 ; $i < $length ; $i++) {
-                $Variables []= $this->parseScriptDataValue($bitin);
+                $Variables []= $this->parseScriptDataObjectProperty($bitin);
             }
             $Value = $Variables;
             break;
+        case 12: // Long string
+            $length = $bitin->getUI32BE();
+            $Value = $bitin->getData($length);
+            break;
         default:
-            exit (1);
+            throw new Exception("Unknown Type:$Type(".self::getScriptTypeName($Type).")");
             break;
         }
-        echo "Value:$Value\n";
         return ["Type" => $Type, "Value" => $Value];
     }
+    function parseScriptDataObjectProperty($bitin) {
+            $length = $bitin->getUI16BE();
+            $PropertyName = $bitin->getData($length);
+            $PropertyValue = $this->parseScriptDataValue($bitin);
+            return ["Name" =>$PropertyName , "Value" => $PropertyValue];
+    }
     function dump() {
-        echo "FrameType:".$this->FrameType;
-        echo "(".self::getVideoFrameTypeName($this->FrameType).") ";
-        echo "CodecID:".$this->CodecID;
-        echo "(".self::getVideoCodecIDName($this->CodecID).")".PHP_EOL;
-        if (isset($this->AVCPacketType) || isset($this->CompositionTime)) {
-            if (isset($this->AVCPacketType)) {
-                    echo "AVCPacketType:".$this->AVCPacketType." ";
-            }
-            if (isset($this->CompositionTime)) {
-                echo "CompositionType:".$this->CompositionType;
-            }
-            echo PHP_EOL;
+        $this->dumpDataValue($this->Name);
+        $this->dumpDataValue($this->Value);
+    }
+    function dumpDataValue($data, $level = 0) {
+        if (! isset($data["Type"])) {
+            throw new Exception("Internal error: Type undefined");
+            return ;
         }
-        $bit = new IO_Bit();
-        $bit->input($this->Data);
-        $bit->hexdump(0, 0x10);
+        $Type = $data["Type"];
+        $Value = $data["Value"];
+        echo str_repeat("  ", $level);
+        echo "  Type:$Type(".self::getScriptTypeName($Type). ") ";
+        switch ($Type) {
+        case 0: // Double
+        case 1: // Boolean
+        case 2: // String
+        case 7: // Reference
+        case 12: // Long string
+            echo "Value:$Value".PHP_EOL;
+            break;
+        case 5: // Null
+        case 6: // Undefined
+        case 8: // ECMA array
+            $arrayLength = count($Value);
+            echo "Length:$arrayLength".PHP_EOL;
+            foreach ($Value as $nv) {
+                $n = $nv["Name"];
+                $v = $nv["Value"];
+                echo str_repeat("  ", $level);
+                echo "  Name:$n: Value:".PHP_EOL;
+                $this->dumpDataValue($v, $level+1);
+            }
+            break;
+        default:
+            throw new Exception("Unknown Type:$Type(".self::getScriptTypeName($Type).")");
+            break;
+        }
     }
 }

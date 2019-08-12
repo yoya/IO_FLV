@@ -47,7 +47,7 @@ class IO_FLV {
             try {
                 $tagList []= $this->parseTag($bitin);
             } catch (Exception $e) {
-                printf(STDERR, $e);
+                fprintf(STDERR, $e);
                 break;
             }
         }
@@ -81,9 +81,9 @@ class IO_FLV {
             $tag['VideoTag'] = $videoTag;
             break;
         case 18: // Script Tag
-            //$scriptTag = new IO_FLV_Tag_Script();
-            //$scriptTag->parse($bitin, $DataSize);
-            //$tag['ScriptTag'] = $scriptTag;
+            $scriptTag = new IO_FLV_Tag_Script();
+            $scriptTag->parse($bitin, $DataSize);
+            $tag['ScriptTag'] = $scriptTag;
             break;
         default:
             break;
@@ -121,7 +121,7 @@ class IO_FLV {
                 $tag['VideoTag']->dump();
                 break;
             case 18: // Script Tag
-                //$tag['ScriptTag']->dump();
+                $tag['ScriptTag']->dump();
                 break;
             default:
                 break;
