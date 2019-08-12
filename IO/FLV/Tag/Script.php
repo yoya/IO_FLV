@@ -74,6 +74,12 @@ class IO_FLV_Tag_Script {
             for ($i = 0 ; $i < $length ; $i++) {
                 $Variables []= $this->parseScriptDataObjectProperty($bitin);
             }
+            $dataObjectEnd = $bitin->getData(3);
+            if ($dataObjectEnd !== "\0\0\t") { // 0, 0, 9
+                $arr = str_split($dataObjectEnd);
+                $arr = array_map("ord", $arr);
+                throw new Exception("Illegal DataObjectEnd:".join(",",$arr));
+            }
             $Value = $Variables;
             break;
         case 12: // Long string
