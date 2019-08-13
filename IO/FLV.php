@@ -1,7 +1,7 @@
 <?php
 
 /*
-  IO_FLV class - v1.0.1
+  IO_FLV class - v1.0.2
   (c) 2019/08/08 yoya@awm.jp
   ref) https://www.adobe.com/devnet/f4v.html
  */
